@@ -14,6 +14,8 @@ export const handler: Handler = async (event, context) => {
       });
     default:
     case "get":
-      return await requestRepository.search().all();
+      return await requestRepository.search().all({
+        pageSize: 500,
+      });
   }
 };
