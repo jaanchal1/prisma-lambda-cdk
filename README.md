@@ -72,7 +72,29 @@ requestRepository.search().all();
 
 ### Performance Benchmarks
 
-[If you migrated an existing app to use Redis, please put performance benchmarks here to show the performance improvements.]
+Note: All the benchmarking was done using [k6](https://k6.io/)
+
+Terminology:
+
+- VU Count: Number of concurrent requests being made
+- Duration: The duration for which test was run
+- Function type: Type of Lambda function executed
+- Prisma p95: p95 response time of prisma lambda function
+- Redis OM p95: p95 response time of redis om lambda function
+- Prisma p90: p90 response time of prisma lambda function
+- Redis OM 90: p90 response time of redis om lambda function
+- Prisma AVG: Avg response time of prisma lambda function
+- Redis OM AVG: Avg response time of redis om lambda function
+
+| VU Count | Duration | Function Type           | Prisma p95 | Redis OM P95 | Prisma p90 | Redis OM p90 | Prisma AVG | Redis OM AVG | Prisma Failed Reqs | Redis OM Failed Reqs |
+| -------- | -------- | ----------------------- | ---------- | ------------ | ---------- | ------------ | ---------- | ------------ | ------------------ | -------------------- |
+| 10       | 30s      | Handler - Create Data   | 91.99 ms   | 67.56 ms     | 74.57 ms   | 60.4 ms      | 71.56 ms   | 57.16 ms     | 0                  | 0                    |
+| 20       | 30s      | Handler - Create Data   | 89.35ms    | 65.7ms       | 74ms       | 59.19ms      | 70.56ms    | 54.73ms      | 26.60%             | 24.66%               |
+| 20       | 30s      | Handler - Retrieve Data | 698.56ms   | 516.26ms     | 600.07ms   | 394.06ms     | 547.38ms   | 344.9ms      | 0                  | 0                    |
+| 20       | 30s      | Migration Runner        | 10.87s     | 3.16s        | 8.95s      | 2.93s        | 7.8s       | 2.67s        | 0                  | 0                    |
+
+From these stats we can infer that there's a signifact performance boost when migrating schemas using Redis OM instead of Prisma.
+Reads from Redis are also faster than Mysql & while not much but writes are faster as well.
 
 ## How to run it locally?
 
