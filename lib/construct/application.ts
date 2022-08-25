@@ -1,8 +1,8 @@
 import * as cdk from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
-import { DatabaseConnectionProps, PrismaFunction } from "./prisma-function";
+import { DatabaseConnectionProps, RedisOmFunction } from "./redis-om-function";
 import { Construct } from "constructs";
-import { DockerPrismaFunction } from "./docker-prisma-function";
+import { DockerRedisOmFunction } from "./docker-redis-om-function";
 import { DockerImageCode } from "aws-cdk-lib/aws-lambda";
 
 interface ApplicationProps {
@@ -22,29 +22,8 @@ export class Application extends Construct {
       vpc: props.vpc,
     });
 
-    // Zip bundle
-    const handler = new PrismaFunction(this, "Handler", {
-      entry: "./backend/handler.ts",
-      memorySize: 256,
-      timeout: cdk.Duration.seconds(15),
-      vpc,
-      securityGroups: [securityGroup],
-      database,
-      depsLockFilePath: "./backend/package-lock.json",
-    });
-
-    const migrationRunner = new PrismaFunction(this, "MigrationRunner", {
-      entry: "./backend/migration-runner.ts",
-      memorySize: 256,
-      timeout: cdk.Duration.minutes(1),
-      vpc,
-      securityGroups: [securityGroup],
-      database,
-      depsLockFilePath: "./backend/package-lock.json",
-    });
-
     // Docker bundle
-    new DockerPrismaFunction(this, "DockerHandler", {
+    const handler = new DockerRedisOmFunction(this, "DockerHandler", {
       code: DockerImageCode.fromImageAsset("./backend"),
       memorySize: 256,
       timeout: cdk.Duration.seconds(15),
@@ -53,7 +32,7 @@ export class Application extends Construct {
       database,
     });
 
-    new DockerPrismaFunction(this, "DockerMigrationRunner", {
+    const migrationRunner = new DockerRedisOmFunction(this, "DockerMigrationRunner", {
       code: DockerImageCode.fromImageAsset("./backend", { cmd: ["migration-runner.handler"] }),
       memorySize: 256,
       timeout: cdk.Duration.minutes(1),

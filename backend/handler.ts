@@ -1,9 +1,5 @@
 import { Handler } from "aws-lambda";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient({
-  log: ["query", "info", `warn`, `error`],
-});
+import { requestRepository } from "./Request";
 
 export const handler: Handler = async (event, context) => {
   console.log(event);
@@ -12,9 +8,12 @@ export const handler: Handler = async (event, context) => {
 
   switch (command) {
     case "create":
-      return await prisma.request.create({ data: { awsRequestId: context.awsRequestId } });
+      return await requestRepository.createAndSave({
+        awsRequestId: context.awsRequestId,
+        createdAt: new Date(),
+      });
     default:
     case "get":
-      return await prisma.request.findMany();
+      return await requestRepository.search().all();
   }
 };
