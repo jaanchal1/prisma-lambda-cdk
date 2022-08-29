@@ -1,0 +1,22 @@
+{
+  "app_name": "redis-om-lambda-cdk",
+  "description": "",
+  "hidden": true,
+  "rank": "22",
+  "type": "Full App",
+  "contributed_by": "Community",
+  "repo_url": "https://github.com/jaanchal1/redis-om-lambda-cdk",
+  "download_url": "https://github.com/jaanchal1/redis-om-lambda-cdk/archive/main.zip",
+  "hosted_url": "",
+  "quick_deploy": false,
+  "deploy_buttons": [],
+  "language": ["TypeScript"],
+  "redis_commands": ["FT.SEARCH", "JSON.SET"],
+  "redis_features": [],
+  "redis_modules": ["RedisJSON", "RedisSearch"],
+  "app_image_urls": [],
+  "youtube_url": "",
+  "special_tags": ["RedisHackathon"],
+  "verticals": [],
+  "markdown": "https://raw.githubusercontent.com/jaanchal1/redis-om-lambda-cdk/main/README.md"
+}
